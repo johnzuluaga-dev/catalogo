@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Catálogo de repuestos para motos — XKAPE Motorcycle Parts. El camino te espera." />
+  <title>XKAPE | Catálogo de Repuestos</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .product-card:hover {
+      box-shadow: 0 6px 24px rgba(209, 0, 0, 0.25);
+      transform: translateY(-4px);
+    }
+    .product-card:hover img {
+      transform: scale(1.05);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0D0D0D; }
+    ::-webkit-scrollbar-thumb { background: #333333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #D10000; }
+    @keyframes shimmer {
+      0%   { background-position: -200% 0; }
+      100% { background-position:  200% 0; }
+    }
+
+    @media (max-width: 768px) {
+      .product-card .p-6 { padding: 0.75rem; }
+      .product-card .text-body-lg { font-size: 13px; line-height: 18px; }
+      .product-card .text-technical-data { font-size: 10px; }
+      .product-card .text-price-display { font-size: 16px; }
+      .tagline-full { display: none; }
+      .tagline-short { display: block !important; }
+    }
+    .skeleton-pulse {
+      background: linear-gradient(90deg, #1A1A1A 25%, #2E2E2E 50%, #1A1A1A 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+  </style>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-deep":              "#0D0D0D",
+            "surface":                   "#131313",
+            "surface-1":                 "#1A1A1A",
+            "surface-2":                 "#222222",
+            "surface-3":                 "#2E2E2E",
+            "surface-container":         "#1f2020",
+            "surface-container-high":    "#2a2a2a",
+            "primary-container":         "#d10000",
+            "primary-light":             "#FF2222",
+            "primary-dark":              "#A00000",
+            "border-muted":              "#333333",
+            "text-high":                 "#FFFFFF",
+            "text-medium":               "#F5F5F5",
+            "text-low":                  "#888888",
+            "on-surface":                "#e4e2e1",
+            "on-surface-variant":        "#e8bcb6",
+            "on-secondary-container":    "#bab8b7",
+            "on-primary-container":      "#ffdfda",
+            "success-whatsapp":          "#25D366",
+          },
+          borderRadius: {
+            DEFAULT: "0.125rem",
+            lg:      "0.25rem",
+            xl:      "0.5rem",
+            full:    "0.75rem",
+          },
+          spacing: {
+            "container-padding": "1.5rem",
+            "header-height":     "72px",
+            "sidebar-width":     "240px",
+            "grid-gap":          "1.25rem",
+            "stack-loose":       "1.75rem",
+            "stack-tight":       "0.5rem",
+          },
+          fontFamily: {
+            "brand-logo":          ["Bebas Neue"],
+            "headline-lg":         ["Bebas Neue"],
+            "headline-lg-mobile":  ["Bebas Neue"],
+            "section-label":       ["Bebas Neue"],
+            "price-display":       ["Bebas Neue"],
+            "body-lg":             ["Barlow"],
+            "body-md":             ["Barlow"],
+            "body-sm":             ["Barlow"],
+            "technical-data":      ["JetBrains Mono"],
+          },
+          fontSize: {
+            "brand-logo":         ["32px",  { lineHeight: "32px", letterSpacing: "2px" }],
+            "headline-lg":        ["48px",  { lineHeight: "48px", letterSpacing: "1px" }],
+            "headline-lg-mobile": ["32px",  { lineHeight: "32px" }],
+            "section-label":      ["12px",  { lineHeight: "16px", letterSpacing: "2px" }],
+            "price-display":      ["20px",  { lineHeight: "20px", letterSpacing: "1px" }],
+            "body-lg":            ["18px",  { lineHeight: "28px" }],
+            "body-md":            ["16px",  { lineHeight: "24px" }],
+            "body-sm":            ["14px",  { lineHeight: "20px", fontWeight: "500" }],
+            "technical-data":     ["11px",  { lineHeight: "14px", letterSpacing: "0.5px" }],
+          },
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-surface-deep text-on-surface selection:bg-primary-container selection:text-white">
+
+  <!-- Top Nav -->
+  <nav id="topnav" class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-container-padding h-[72px] bg-surface-deep border-b border-border-muted"></nav>
+
+  <!-- Sidebar overlay (móvil) -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/70 z-30 hidden lg:hidden"></div>
+
+  <div class="flex pt-[72px]">
+
+    <!-- Sidebar -->
+    <aside id="sidebar"
+      class="flex flex-col fixed left-0 top-[72px] h-[calc(100vh-72px)] w-[240px] py-stack-loose px-6
+             bg-surface-1 border-r border-border-muted overflow-y-auto z-40
+             -translate-x-full lg:translate-x-0 transition-transform duration-300">
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 lg:ml-[240px] px-3 md:px-container-padding py-4 md:py-8 bg-surface-deep min-h-screen">
+
+      <!-- Results bar -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+          <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-text-high uppercase">
+            Repuestos de Alto Calibre
+          </h1>
+          <p id="results-subtitle" class="font-body-md text-body-md text-text-low mt-1"></p>
+        </div>
+        <div class="flex items-center gap-4 w-full md:w-auto">
+          <span class="font-section-label text-section-label text-text-low whitespace-nowrap">ORDENAR POR</span>
+          <select id="sort-select"
+            class="bg-surface-1 border border-border-muted text-body-sm font-body-sm text-on-surface px-4 py-2 pr-10 focus:border-primary-light focus:ring-0 outline-none appearance-none cursor-pointer">
+            <option value="default">Por defecto</option>
+            <option value="price-asc">Precio: menor a mayor</option>
+            <option value="price-desc">Precio: mayor a menor</option>
+            <option value="name-asc">Nombre (A → Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Product grid -->
+      <div id="product-grid"
+        class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-grid-gap">
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="w-full py-8 px-container-padding flex flex-col items-center gap-stack-tight bg-surface-deep border-t border-border-muted lg:ml-[240px] lg:w-[calc(100%-240px)]">
+    <div class="flex flex-col items-center mb-4">
+      <span class="font-brand-logo text-brand-logo text-on-surface uppercase tracking-widest">XKAPE</span>
+      <span class="font-body-sm text-body-sm text-text-low">El camino te espera</span>
+    </div>
+    <div class="flex gap-8 mb-4">
+      <a href="#" class="font-body-sm text-body-sm text-text-low hover:text-primary-light transition-colors hover:underline">Términos y Condiciones</a>
+      <a href="#" class="font-body-sm text-body-sm text-text-low hover:text-primary-light transition-colors hover:underline">Garantías</a>
+      <a href="#" class="font-body-sm text-body-sm text-text-low hover:text-primary-light transition-colors hover:underline">Contacto</a>
+    </div>
+    <p class="font-body-sm text-body-sm text-text-low opacity-50">© 2026 XKAPE Motorcycle Parts. Todos los derechos reservados.</p>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
