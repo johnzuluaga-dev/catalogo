@@ -12,6 +12,17 @@ const state = {
   sort:     'default',
 };
 
+// ── Sistema de acceso secreto al admin ─────────
+function setupSecretAdminAccess() {
+  const adminBtn = document.getElementById('admin-access-btn');
+  
+  if (adminBtn) {
+    adminBtn.addEventListener('click', () => {
+      window.location.href = '/admin.html';
+    });
+  }
+}
+
 // ── Filtrar y ordenar ──────────────────────────
 function getFiltered() {
   let result = [...state.all];
@@ -93,6 +104,7 @@ function closeSidebar() {
 // ── Init ───────────────────────────────────────
 async function init() {
   renderHeader();
+  setupSecretAdminAccess();
 
   try {
     state.all = await fetchProducts();
