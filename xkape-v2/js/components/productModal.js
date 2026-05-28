@@ -30,8 +30,9 @@ export function initModal() {
       <div class="w-full md:w-[280px] shrink-0 bg-surface-2 flex items-center justify-center aspect-square md:aspect-auto">
         <img id="modal-img" src="" alt=""
           class="w-full h-full object-contain"
-          onerror="this.parentElement.innerHTML='<span class=\\"material-symbols-outlined text-[64px] text-border-muted\\">build</span>'"
         />
+        <span id="modal-img-placeholder"
+          class="material-symbols-outlined text-[64px] text-border-muted hidden">build</span>
       </div>
 
       <!-- Info -->
@@ -75,6 +76,13 @@ export function initModal() {
   `;
   document.body.appendChild(modal);
 
+  const imgEl = document.getElementById('modal-img');
+  const placeholder = document.getElementById('modal-img-placeholder');
+  imgEl.onerror = () => {
+    imgEl.classList.add('hidden');
+    placeholder.classList.remove('hidden');
+  };
+
   const close = () => {
     modal.classList.remove('flex');
     modal.classList.add('hidden');
@@ -90,8 +98,12 @@ export function openModal(product) {
   const modal = document.getElementById('product-modal');
   if (!modal) return;
 
-  document.getElementById('modal-img').src        = product.imagen_url || '';
-  document.getElementById('modal-img').alt        = product.nombre || '';
+  const imgEl = document.getElementById('modal-img');
+  const placeholder = document.getElementById('modal-img-placeholder');
+  imgEl.classList.remove('hidden');
+  placeholder.classList.add('hidden');
+  imgEl.src = product.imagen_url || '';
+  imgEl.alt = product.nombre || '';
   document.getElementById('modal-nombre').textContent    = product.nombre || '';
   document.getElementById('modal-ref').textContent       = product.referencia ? `Ref: ${product.referencia}` : '';
   document.getElementById('modal-categoria').textContent = product.categoria || '';

@@ -26,8 +26,10 @@ export function createProductCard(product) {
              alt="${product.nombre || ''}"
              loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500"
-             onerror="this.parentElement.innerHTML='<div class=\\"w-full h-full flex items-center justify-center text-text-low\\"><span class=\\"material-symbols-outlined text-[48px]\\">build</span></div>'"
-           />`
+           />
+           <div class="card-img-error w-full h-full flex items-center justify-center text-text-low hidden absolute inset-0">
+             <span class="material-symbols-outlined text-[48px]">build</span>
+           </div>`
         : `<div class="w-full h-full flex items-center justify-center text-text-low">
              <span class="material-symbols-outlined text-[48px]">build</span>
            </div>`
@@ -64,6 +66,15 @@ export function createProductCard(product) {
       </div>
     </div>
   `;
+
+  if (hasImage) {
+    const img = card.querySelector('img');
+    const errorDiv = card.querySelector('.card-img-error');
+    img.onerror = () => {
+      img.classList.add('hidden');
+      errorDiv.classList.remove('hidden');
+    };
+  }
 
   // Clic en la card → abre modal
   card.addEventListener('click', () => openModal(product));
