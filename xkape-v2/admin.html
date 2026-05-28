@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XKAPE | Panel de Administración</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0..1&display=swap" rel="stylesheet" />
+
+  <style>
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0D0D0D; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #D10000; }
+    #modal-backdrop { backdrop-filter: blur(4px); }
+    .img-preview { object-fit: cover; }
+    .drop-zone.drag-over { border-color: #D10000; background: rgba(209,0,0,.08); }
+  </style>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'surface-deep':           '#0D0D0D',
+            'surface':                '#131313',
+            'surface-1':              '#1A1A1A',
+            'surface-2':              '#222222',
+            'surface-3':              '#2E2E2E',
+            'primary-container':      '#d10000',
+            'primary-light':          '#FF2222',
+            'primary-dark':           '#A00000',
+            'border-muted':           '#333333',
+            'text-high':              '#FFFFFF',
+            'text-medium':            '#F5F5F5',
+            'text-low':               '#888888',
+            'on-surface':             '#e4e2e1',
+          },
+          fontFamily: {
+            brand:  ['Bebas Neue'],
+            body:   ['Barlow'],
+            mono:   ['JetBrains Mono'],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-surface-deep text-on-surface font-body min-h-screen">
+
+<!-- ╔══════════════════════════════════════════════════════════╗ -->
+<!-- ║  LOGIN                                                   ║ -->
+<!-- ╚══════════════════════════════════════════════════════════╝ -->
+<section id="login-section" class="min-h-screen flex items-center justify-center px-4">
+  <div class="w-full max-w-sm bg-surface-1 border border-border-muted p-8 rounded-lg shadow-2xl">
+    <div class="text-center mb-8">
+      <span class="font-brand text-4xl text-text-high tracking-widest">XKAPE</span>
+      <p class="text-text-low text-sm mt-1">Panel de Administración</p>
+    </div>
+
+    <div id="login-error" class="hidden mb-4 px-4 py-3 bg-red-900/40 border border-red-700 rounded text-red-300 text-sm"></div>
+
+    <form id="login-form" class="space-y-4">
+      <div>
+        <label class="block text-xs text-text-low mb-1 uppercase tracking-wider">Contraseña</label>
+        <input id="login-password" type="password" required autocomplete="current-password"
+          class="w-full bg-surface-2 border border-border-muted text-on-surface px-4 py-2.5 rounded focus:border-primary-light focus:ring-0 outline-none text-sm"
+          placeholder="••••••••" />
+      </div>
+      <button type="submit"
+        class="w-full bg-primary-container hover:bg-primary-light text-white font-brand tracking-widest text-lg py-2.5 rounded transition-colors">
+        ENTRAR
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════════════════════╗ -->
+<!-- ║  PANEL (oculto hasta login)                              ║ -->
+<!-- ╚══════════════════════════════════════════════════════════╝ -->
+<div id="admin-panel" class="hidden min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 flex items-center justify-between px-6 h-16 bg-surface-deep border-b border-border-muted">
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="font-brand text-2xl text-text-high tracking-widest hover:text-primary-light transition-colors">XKAPE</a>
+      <span class="text-border-muted">|</span>
+      <span class="text-text-low text-sm uppercase tracking-wider">Administración</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="index.html" target="_blank"
+        class="text-text-low hover:text-text-high text-sm flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-base">open_in_new</span> Ver catálogo
+      </a>
+      <button id="btn-logout"
+        class="text-text-low hover:text-primary-light text-sm flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-base">logout</span> Salir
+      </button>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="flex-1 px-4 md:px-8 py-8">
+
+    <!-- Stats bar -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="font-brand text-3xl text-text-high tracking-wide">Productos</h1>
+        <p id="stats-text" class="text-text-low text-sm mt-0.5">Cargando…</p>
+      </div>
+      <button id="btn-add-product"
+        class="flex items-center gap-2 bg-primary-container hover:bg-primary-light text-white px-5 py-2.5 rounded transition-colors text-sm font-body font-semibold">
+        <span class="material-symbols-outlined text-base">add</span>
+        Agregar Producto
+      </button>
+    </div>
+
+    <!-- Loading / Error -->
+    <div id="table-loading" class="text-center py-20 text-text-low">
+      <span class="material-symbols-outlined text-5xl animate-spin" style="animation-duration:1.2s">progress_activity</span>
+      <p class="mt-3 text-sm">Cargando productos…</p>
+    </div>
+    <div id="table-error" class="hidden text-center py-16 text-red-400">
+      <span class="material-symbols-outlined text-4xl">error</span>
+      <p class="mt-2 text-sm" id="table-error-msg"></p>
+      <button id="btn-retry" class="mt-4 text-primary-light text-sm underline">Reintentar</button>
+    </div>
+
+    <!-- Products table -->
+    <div id="table-wrapper" class="hidden overflow-x-auto rounded-lg border border-border-muted">
+      <table class="w-full text-sm">
+        <thead class="bg-surface-1 text-text-low uppercase text-xs tracking-wider">
+          <tr>
+            <th class="px-4 py-3 text-left w-16">ID</th>
+            <th class="px-4 py-3 text-left w-16">Img</th>
+            <th class="px-4 py-3 text-left">Nombre</th>
+            <th class="px-4 py-3 text-left">Referencia</th>
+            <th class="px-4 py-3 text-left">Categoría</th>
+            <th class="px-4 py-3 text-left">Marca</th>
+            <th class="px-4 py-3 text-right">Precio</th>
+            <th class="px-4 py-3 text-center w-28">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="products-tbody" class="divide-y divide-border-muted bg-surface"></tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════╗ -->
+<!-- ║  MODAL — Agregar / Editar                                ║ -->
+<!-- ╚══════════════════════════════════════════════════════════╝ -->
+<div id="modal-backdrop" class="hidden fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-10 pb-6 px-4">
+  <div class="w-full max-w-lg bg-surface-1 border border-border-muted rounded-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+
+    <!-- Modal header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-border-muted sticky top-0 bg-surface-1 z-10">
+      <h2 id="modal-title" class="font-brand text-xl text-text-high tracking-wide">AGREGAR PRODUCTO</h2>
+      <button id="btn-modal-close" class="text-text-low hover:text-text-high transition-colors">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- Modal body -->
+    <form id="product-form" class="px-6 py-6 space-y-5" novalidate>
+      <input type="hidden" id="form-id" />
+
+      <!-- Nombre -->
+      <div>
+        <label class="block text-xs text-text-low uppercase tracking-wider mb-1">Nombre *</label>
+        <input id="form-nombre" type="text" required maxlength="200"
+          class="w-full bg-surface-2 border border-border-muted text-on-surface px-4 py-2.5 rounded focus:border-primary-light focus:ring-0 outline-none text-sm"
+          placeholder="Ej: Kit de embrague completo" />
+      </div>
+
+      <!-- Referencia -->
+      <div>
+        <label class="block text-xs text-text-low uppercase tracking-wider mb-1">Referencia / SKU *</label>
+        <input id="form-referencia" type="text" required maxlength="100"
+          class="w-full bg-surface-2 border border-border-muted text-on-surface px-4 py-2.5 rounded focus:border-primary-light focus:ring-0 outline-none text-sm font-mono uppercase"
+          placeholder="Ej: XK-EMB-001" />
+      </div>
+
+      <!-- Precio -->
+      <div>
+        <label class="block text-xs text-text-low uppercase tracking-wider mb-1">Precio (COP) *</label>
+        <input id="form-precio" type="number" required min="0" step="100"
+          class="w-full bg-surface-2 border border-border-muted text-on-surface px-4 py-2.5 rounded focus:border-primary-light focus:ring-0 outline-none text-sm"
+          placeholder="Ej: 85000" />
+      </div>
+
+      <!-- Categoría + Marca (grid) -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs text-text-low uppercase tracking-wider mb-1">Categoría *</label>
+          <select id="form-categoria" required
+            class="w-full bg-surface-2 border border-border-muted text-on-surface px-4 py-2.5 rounded focus:border-primary-light focus:ring-0 outline-none text-sm appearance-none cursor-pointer">
+            <option value="">Seleccionar…</option>
+            <option>Cables</option>
+            <option>Transmisión</option>
+            <option>Frenos</option>
+            <option>Motor</option>
+            <option>Eléctrico</option>
+            <option>Carrocería</option>
+            <option>Rodamientos</option>
+            <option>Filtros</option>
+            <option>Kits</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-text-low uppercase tracking-wider mb-1">Marca *</label>
+          <select id="form-marca" required
+            class="w-full bg-surface-2 border border-border-muted text-on-surface px-4 py-2.5 rounded focus:border-primary-light focus:ring-0 outline-none text-sm appearance-none cursor-pointer">
+            <option value="">Seleccionar…</option>
+            <option>Boxer CT</option>
+            <option>AKT NKD</option>
+            <option>Eco Deluxe</option>
+            <option>Pulsar</option>
+            <option>Universal</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Imagen -->
+      <div>
+        <label class="block text-xs text-text-low uppercase tracking-wider mb-1">Imagen del producto</label>
+
+        <!-- Preview -->
+        <div id="img-preview-wrap" class="hidden mb-3 relative w-32 h-32 rounded overflow-hidden border border-border-muted">
+          <img id="img-preview" src="" alt="Preview" class="img-preview w-full h-full" />
+          <button type="button" id="btn-remove-img"
+            class="absolute top-1 right-1 bg-surface-deep/80 hover:bg-red-900/80 text-text-high rounded-full p-0.5 transition-colors">
+            <span class="material-symbols-outlined text-base leading-none">close</span>
+          </button>
+        </div>
+
+        <!-- Drop zone -->
+        <div id="drop-zone"
+          class="drop-zone border-2 border-dashed border-border-muted rounded-lg p-6 text-center cursor-pointer hover:border-primary-light transition-colors">
+          <span class="material-symbols-outlined text-3xl text-text-low">cloud_upload</span>
+          <p class="text-text-low text-sm mt-2">Arrastra una imagen aquí o <span class="text-primary-light underline">haz clic</span></p>
+          <p class="text-text-low text-xs mt-1">JPG, PNG, WEBP — máx. 10 MB</p>
+          <input id="form-imagen" type="file" accept="image/*" class="hidden" />
+        </div>
+
+        <div id="upload-progress" class="hidden mt-2 flex items-center gap-2 text-xs text-text-low">
+          <span class="material-symbols-outlined text-base animate-spin" style="animation-duration:1s">progress_activity</span>
+          Subiendo imagen…
+        </div>
+        <div id="upload-error" class="hidden mt-2 text-xs text-red-400"></div>
+
+        <!-- URL manual (fallback) -->
+        <div class="mt-3">
+          <p class="text-xs text-text-low mb-1">O pega la URL de la imagen directamente:</p>
+          <input id="form-imagen-url" type="url"
+            class="w-full bg-surface-2 border border-border-muted text-on-surface px-4 py-2 rounded focus:border-primary-light focus:ring-0 outline-none text-xs"
+            placeholder="https://res.cloudinary.com/…" />
+        </div>
+      </div>
+
+      <!-- Form error -->
+      <div id="form-error" class="hidden px-4 py-3 bg-red-900/40 border border-red-700 rounded text-red-300 text-sm"></div>
+
+      <!-- Buttons -->
+      <div class="flex gap-3 pt-2">
+        <button type="button" id="btn-cancel"
+          class="flex-1 bg-surface-3 hover:bg-surface-2 text-on-surface py-2.5 rounded text-sm font-semibold transition-colors">
+          Cancelar
+        </button>
+        <button type="submit" id="btn-submit"
+          class="flex-1 bg-primary-container hover:bg-primary-light text-white py-2.5 rounded text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+          <span id="btn-submit-icon" class="material-symbols-outlined text-base">save</span>
+          <span id="btn-submit-text">Guardar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════╗ -->
+<!-- ║  MODAL — Confirmar eliminación                           ║ -->
+<!-- ╚══════════════════════════════════════════════════════════╝ -->
+<div id="confirm-backdrop" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
+  <div class="w-full max-w-sm bg-surface-1 border border-border-muted rounded-lg shadow-2xl p-6">
+    <div class="flex items-start gap-3 mb-5">
+      <span class="material-symbols-outlined text-red-400 text-3xl mt-0.5">warning</span>
+      <div>
+        <h3 class="font-semibold text-text-high">Eliminar producto</h3>
+        <p class="text-text-low text-sm mt-1" id="confirm-msg">¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer.</p>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button id="btn-confirm-cancel"
+        class="flex-1 bg-surface-3 hover:bg-surface-2 text-on-surface py-2.5 rounded text-sm font-semibold transition-colors">
+        Cancelar
+      </button>
+      <button id="btn-confirm-delete"
+        class="flex-1 bg-red-700 hover:bg-red-600 text-white py-2.5 rounded text-sm font-semibold transition-colors">
+        Eliminar
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

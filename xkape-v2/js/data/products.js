@@ -1,10 +1,4 @@
 // ─────────────────────────────────────────────────────────────
-//  Configuración Supabase
-// ─────────────────────────────────────────────────────────────
-const SUPABASE_URL  = 'https://eoazzevknjxluwfwvwgd.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYXp6ZXZrbmp4bHV3Znd2d2dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MDM5OTcsImV4cCI6MjA5NTM3OTk5N30.olQkCvw8OwJjNL4Fqt0vASz69RyIQOpgg5csCHnL6xU';
-
-// ─────────────────────────────────────────────────────────────
 //  Categorías y marcas
 // ─────────────────────────────────────────────────────────────
 export const CATEGORIES = [
@@ -29,9 +23,21 @@ export const BRANDS = [
 
 // ─────────────────────────────────────────────────────────────
 //  fetchProducts()
-//  Trae todos los productos desde Supabase.
+//  Usa el backend Express (/api/products).
+//  Si se sirve sin servidor Node, cae directamente a Supabase.
 // ─────────────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://eoazzevknjxluwfwvwgd.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYXp6ZXZrbmp4bHV3Znd2d2dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MDM5OTcsImV4cCI6MjA5NTM3OTk5N30.olQkCvw8OwJjNL4Fqt0vASz69RyIQOpgg5csCHnL6xU';
+
 export async function fetchProducts() {
+  // Con el servidor Express, usar la API local
+  try {
+    const res = await fetch('/api/products');
+    if (res.ok) return await res.json();
+  } catch {
+    // Fallback: acceso directo a Supabase (modo sin servidor)
+  }
+
   const res = await fetch(
     `${SUPABASE_URL}/rest/v1/productos?select=*&order=id.asc`,
     {
@@ -42,9 +48,6 @@ export async function fetchProducts() {
     }
   );
 
-  if (!res.ok) {
-    throw new Error(`Error Supabase: ${res.status} ${res.statusText}`);
-  }
-
+  if (!res.ok) throw new Error(`Error Supabase: ${res.status} ${res.statusText}`);
   return await res.json();
 }
