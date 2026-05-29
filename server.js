@@ -39,6 +39,11 @@ function supabaseHeaders(extra = {}) {
   };
 }
 
+// ── Config pública (frontend) ─────────────────────────────────
+app.get('/api/config', (req, res) => {
+  res.json({ whatsappNumber: process.env.WHATSAPP_NUMBER || '' });
+});
+
 // ── Auth ──────────────────────────────────────────────────────
 app.post('/api/auth', (req, res) => {
   if (req.body.password === ADMIN_PASS) {

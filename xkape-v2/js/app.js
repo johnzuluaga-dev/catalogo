@@ -2,6 +2,7 @@ import { fetchProducts, CATEGORIES, BRANDS } from './data/products.js';
 import { renderHeader, updateResultCount } from './components/header.js';
 import { renderFilters } from './components/filters.js';
 import { renderProductGrid } from './components/productCard.js';
+import { initCart } from './components/cart.js';
 
 // ── Estado global ──────────────────────────────
 const state = {
@@ -104,6 +105,7 @@ function closeSidebar() {
 // ── Init ───────────────────────────────────────
 async function init() {
   renderHeader();
+  await initCart();
   setupSecretAdminAccess();
 
   try {
