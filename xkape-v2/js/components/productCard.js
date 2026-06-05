@@ -1,15 +1,5 @@
 import { initModal, openModal } from './productModal.js';
 
-function formatPrice(price) {
-  if (!price && price !== 0) return '';
-  return new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price);
-}
-
 export function createProductCard(product) {
   const card = document.createElement('div');
   card.className = 'product-card group bg-surface-1 border border-border-muted transition-all duration-300 flex flex-col cursor-pointer';
@@ -58,12 +48,6 @@ export function createProductCard(product) {
       <h3 class="font-body-sm md:font-body-lg text-body-sm md:text-body-lg font-bold text-text-high mb-2 line-clamp-2 flex-1">
         ${product.nombre || ''}
       </h3>
-      <div class="mt-auto pt-2 border-t border-border-muted">
-        ${product.precio
-          ? `<p class="font-price-display text-price-display text-primary-light">${formatPrice(product.precio)}</p>`
-          : ''
-        }
-      </div>
     </div>
   `;
 

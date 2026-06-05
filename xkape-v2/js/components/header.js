@@ -26,15 +26,6 @@ export function renderHeader() {
         <span id="result-count">0</span> PRODUCTOS
       </span>
       <button
-        id="cart-toggle-btn"
-        class="relative flex items-center gap-1.5 border border-border-muted px-3 py-2 hover:border-primary-light transition-colors"
-        aria-label="Ver carrito"
-      >
-        <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
-        <span class="hidden md:block font-section-label text-[11px]">CARRITO</span>
-        <span class="cart-badge absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-primary-container text-white font-technical-data text-[10px] font-bold flex items-center justify-center px-1 hidden"></span>
-      </button>
-      <button
         id="mobile-filter-btn"
         class="lg:hidden flex items-center gap-1.5 border border-border-muted px-3 py-2 hover:border-primary-light transition-colors"
         aria-expanded="false"
