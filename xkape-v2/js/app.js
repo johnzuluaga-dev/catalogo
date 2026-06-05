@@ -2,6 +2,7 @@ import { fetchProducts, CATEGORIES, BRANDS } from './data/products.js';
 import { renderHeader, updateResultCount } from './components/header.js';
 import { renderFilters } from './components/filters.js';
 import { renderProductGrid } from './components/productCard.js';
+import { initCart } from './components/cart.js';
 
 // ── Estado global ──────────────────────────────
 const state = {
@@ -39,7 +40,9 @@ function getFiltered() {
   }
 
   switch (state.sort) {
-    case 'name-asc': result.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || '', 'es')); break;
+    case 'price-asc':  result.sort((a, b) => a.precio - b.precio); break;
+    case 'price-desc': result.sort((a, b) => b.precio - a.precio); break;
+    case 'name-asc':   result.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || '', 'es')); break;
   }
 
   return result;
@@ -102,6 +105,7 @@ function closeSidebar() {
 // ── Init ───────────────────────────────────────
 async function init() {
   renderHeader();
+  await initCart();
   setupSecretAdminAccess();
 
   try {
